@@ -12,16 +12,27 @@ import '../styles/ARScene.css';
 export const ARScene: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const cameraRef = useRef<THREE.PerspectiveCamera>(null);
-    const { stream } = useCameraFeed();
-    const { orientation } = useDeviceOrientation();
+    const { stream, requestCamera } = useCameraFeed();
+    const { orientation, requestPermission } = useDeviceOrientation();
     const zombies = useGameStore(state => state.zombies);
     const removeZombie = useGameStore(state => state.removeZombie);
+
+    // Request camera and orientation on mount
+    useEffect(() => {
+        const initializeAR = async () => {
+            await requestCamera();
+            await requestPermission();
+        };
+        initializeAR();
+    }, [requestCamera, requestPermission]);
 
     // Update camera feed as background
     useEffect(() => {
         if (videoRef.current && stream) {
             videoRef.current.srcObject = stream;
-            videoRef.current.play();
+            videoRef.current.play().catch(err => {
+                console.error('Error playing video:', err);
+            });
         }
     }, [stream]);
 
@@ -53,6 +64,7 @@ export const ARScene: React.FC = () => {
                 autoPlay
                 playsInline
                 muted
+                style={{ backgroundColor: stream ? 'transparent' : '#1a1a1a' }}
             />
 
             {/* Three.js AR overlay */}
@@ -107,6 +119,25 @@ export const ARScene: React.FC = () => {
                     <meshStandardMaterial transparent opacity={0} />
                 </mesh>
             </Canvas>
+
+            {/* Loading indicator */}
+            {!stream && (
+                <div style={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    color: '#fff',
+                    fontSize: '1.2rem',
+                    textAlign: 'center',
+                    zIndex: 100
+                }}>
+                    <div>Initializing AR Camera...</div>
+                    <div style={{ fontSize: '0.9rem', marginTop: '1rem', opacity: 0.7 }}>
+                        Please grant camera permission
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
