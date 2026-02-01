@@ -58,6 +58,7 @@ export const HUD: React.FC = () => {
                 <div className="radar-container">
                     <div className="radar-label">SCANNER</div>
                     <div className="radar">
+                        <div className="radar-fov" />
                         <div className="radar-center" />
                         {aliveZombies.map(zombie => {
                             const angle = Math.atan2(zombie.position[0], zombie.position[2]);
