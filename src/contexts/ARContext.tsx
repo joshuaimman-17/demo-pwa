@@ -1,6 +1,7 @@
 import React, { createContext, useContext, ReactNode } from 'react';
 import { useCameraFeed } from '../hooks/useCameraFeed';
 import { useDeviceOrientation } from '../hooks/useDeviceOrientation';
+import { debugLog } from '../components/DebugOverlay';
 
 interface ARContextType {
     stream: MediaStream | null;
@@ -21,25 +22,19 @@ export const ARProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const cameraData = useCameraFeed();
     const orientationData = useDeviceOrientation();
 
-    console.log('[ARProvider] Rendering with:', {
-        hasStream: !!cameraData.stream,
-        streamId: cameraData.stream?.id,
-        cameraError: cameraData.error,
-        orientation: orientationData.orientation,
-        orientationError: orientationData.error
-    });
+    debugLog.info(`ARProvider: stream=${cameraData.stream?.id || 'none'}, error=${cameraData.error || 'none'}`);
 
     const value: ARContextType = {
         stream: cameraData.stream,
         cameraError: cameraData.error,
         requestCamera: async () => {
-            console.log('[ARProvider] requestCamera called');
+            debugLog.info('ARProvider: requestCamera called');
             await cameraData.requestCamera();
         },
         orientation: orientationData.orientation,
         orientationError: orientationData.error,
         requestPermission: async () => {
-            console.log('[ARProvider] requestPermission called');
+            debugLog.info('ARProvider: requestPermission called');
             await orientationData.requestPermission();
         },
     };

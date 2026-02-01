@@ -6,6 +6,7 @@ import { useAR } from '../contexts/ARContext';
 import { Gun } from './Gun';
 import { Zombie } from './Zombie';
 import { useGameStore } from '../store/gameStore';
+import { debugLog } from './DebugOverlay';
 import '../styles/ARScene.css';
 
 export const ARScene: React.FC = () => {
@@ -15,37 +16,22 @@ export const ARScene: React.FC = () => {
     const zombies = useGameStore(state => state.zombies);
     const removeZombie = useGameStore(state => state.removeZombie);
 
-    console.log('[ARScene] Rendering with:', {
-        hasStream: !!stream,
-        streamId: stream?.id,
-        streamActive: stream?.active,
-        hasVideoRef: !!videoRef.current,
-        orientation: orientation,
-        zombieCount: zombies.length
-    });
+    debugLog.info(`ARScene: stream=${stream?.id || 'NONE'}, active=${stream?.active}, zombies=${zombies.length}`);
 
     // Update camera feed as background
     useEffect(() => {
-        console.log('[ARScene] Stream effect triggered:', {
-            hasVideoRef: !!videoRef.current,
-            hasStream: !!stream,
-            streamId: stream?.id,
-            streamActive: stream?.active
-        });
+        debugLog.info(`ARScene effect: hasVideo=${!!videoRef.current}, hasStream=${!!stream}, streamId=${stream?.id}`);
 
         if (videoRef.current && stream) {
-            console.log('[ARScene] Setting video srcObject');
+            debugLog.info('ARScene: Setting video srcObject');
             videoRef.current.srcObject = stream;
             videoRef.current.play().then(() => {
-                console.log('[ARScene] ✅ Video playing successfully');
+                debugLog.success('ARScene: ✅ Video playing!');
             }).catch(err => {
-                console.error('[ARScene] ❌ Error playing video:', err);
+                debugLog.error(`ARScene: ❌ Video error: ${err.message}`);
             });
         } else {
-            console.warn('[ARScene] ⚠️ Missing videoRef or stream:', {
-                hasVideoRef: !!videoRef.current,
-                hasStream: !!stream
-            });
+            debugLog.warning(`ARScene: ⚠️ Missing ${!videoRef.current ? 'videoRef' : 'stream'}`);
         }
     }, [stream]);
 

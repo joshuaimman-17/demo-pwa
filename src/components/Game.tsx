@@ -6,6 +6,7 @@ import { ZombieManager } from '../systems/ZombieManager';
 import { WeaponSystem } from '../systems/WeaponSystem';
 import { DamageFlash } from './DamageFlash';
 import { CameraTest } from './CameraTest';
+import { DebugOverlay } from './DebugOverlay';
 import { useGameStore } from '../store/gameStore';
 import '../styles/Game.css';
 
@@ -42,7 +43,12 @@ export const Game: React.FC = () => {
 
     // Show camera test first
     if (!testPassed) {
-        return <CameraTest onTestComplete={() => setTestPassed(true)} />;
+        return (
+            <>
+                <CameraTest onTestComplete={() => setTestPassed(true)} />
+                <DebugOverlay />
+            </>
+        );
     }
 
     if (!isPlaying && !isGameOver) {
@@ -95,6 +101,7 @@ export const Game: React.FC = () => {
             <HUD />
             <FireButton />
             <DamageFlash />
+            <DebugOverlay />
 
             {/* Game systems (invisible) */}
             <div style={{ display: 'none' }}>
