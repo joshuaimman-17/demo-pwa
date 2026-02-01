@@ -74,6 +74,7 @@ export const Game: React.FC = () => {
                         </ul>
                     </div>
                 </div>
+                <DebugOverlay />
             </div>
         );
     }
@@ -83,14 +84,12 @@ export const Game: React.FC = () => {
             <div className="game-over">
                 <div className="game-over-content">
                     <h1 className="game-over-title">GAME OVER</h1>
-                    <div className="final-score">
-                        <div className="score-label">Final Score</div>
-                        <div className="score-number">{score}</div>
-                    </div>
+                    <p className="final-score">Final Score: {score}</p>
                     <button className="restart-button" onClick={reset}>
-                        TRY AGAIN
+                        PLAY AGAIN
                     </button>
                 </div>
+                <DebugOverlay />
             </div>
         );
     }
