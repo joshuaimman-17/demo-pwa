@@ -1,0 +1,212 @@
+.desktop-redirect {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 50%, #0a0a0a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+}
+
+.desktop-redirect::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(139, 0, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(139, 0, 0, 0.1) 0%, transparent 50%);
+    animation: pulse 4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+.desktop-redirect-content {
+    max-width: 600px;
+    padding: 3rem;
+    text-align: center;
+    position: relative;
+    z-index: 1;
+    background: rgba(0, 0, 0, 0.7);
+    border-radius: 20px;
+    border: 2px solid rgba(139, 0, 0, 0.3);
+    box-shadow: 0 20px 60px rgba(139, 0, 0, 0.3);
+}
+
+.logo-section {
+    margin-bottom: 2rem;
+}
+
+.game-title {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin: 0;
+    line-height: 1.2;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.title-ar {
+    display: block;
+    color: #ff4444;
+    text-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+}
+
+.title-zombie {
+    display: block;
+    color: #8B0000;
+    text-shadow: 0 0 30px rgba(139, 0, 0, 0.9);
+    font-size: 4rem;
+}
+
+.title-shooter {
+    display: block;
+    color: #666;
+    font-size: 2rem;
+    letter-spacing: 0.3em;
+}
+
+.blood-drip {
+    width: 60px;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, #8B0000, transparent);
+    margin: 1rem auto;
+    box-shadow: 0 0 10px rgba(139, 0, 0, 0.8);
+}
+
+.message-section {
+    margin: 2rem 0;
+}
+
+.warning-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: bounce 2s ease-in-out infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.main-message {
+    font-size: 2rem;
+    color: #ff4444;
+    margin: 1rem 0;
+    font-weight: 700;
+    text-shadow: 0 2px 10px rgba(255, 68, 68, 0.5);
+}
+
+.sub-message {
+    font-size: 1.1rem;
+    color: #aaa;
+    margin: 0.5rem 0;
+}
+
+.qr-section {
+    margin: 2.5rem 0;
+}
+
+.qr-instruction {
+    font-size: 1rem;
+    color: #888;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.qr-container {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 15px;
+    display: inline-block;
+    box-shadow: 0 10px 30px rgba(139, 0, 0, 0.3);
+}
+
+.install-section {
+    margin: 2rem 0;
+    text-align: left;
+    background: rgba(139, 0, 0, 0.1);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border-left: 4px solid #8B0000;
+}
+
+.install-section h3 {
+    color: #ff4444;
+    margin-top: 0;
+    font-size: 1.2rem;
+}
+
+.install-steps {
+    color: #ccc;
+    line-height: 1.8;
+    padding-left: 1.5rem;
+}
+
+.install-steps li {
+    margin: 0.5rem 0;
+}
+
+.features-section {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid rgba(139, 0, 0, 0.3);
+}
+
+.feature {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: #888;
+    font-size: 0.9rem;
+}
+
+.feature-icon {
+    font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+    .desktop-redirect-content {
+        padding: 2rem;
+    }
+
+    .game-title {
+        font-size: 2.5rem;
+    }
+
+    .title-zombie {
+        font-size: 3rem;
+    }
+
+    .title-shooter {
+        font-size: 1.5rem;
+    }
+
+    .main-message {
+        font-size: 1.5rem;
+    }
+}

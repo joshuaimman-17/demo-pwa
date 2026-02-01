@@ -1,0 +1,92 @@
+.permission-gate {
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a0000 50%, #0a0a0a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.permission-content {
+    max-width: 500px;
+    padding: 2rem;
+    text-align: center;
+}
+
+.permission-title {
+    font-size: 2.5rem;
+    font-weight: 900;
+    color: #ff4444;
+    text-shadow: 0 0 20px rgba(255, 68, 68, 0.8);
+    margin-bottom: 2rem;
+    letter-spacing: 0.1em;
+}
+
+.permission-step {
+    background: rgba(0, 0, 0, 0.7);
+    padding: 2rem;
+    border-radius: 15px;
+    border: 2px solid rgba(139, 0, 0, 0.5);
+    margin-bottom: 1rem;
+}
+
+.permission-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.permission-step h2 {
+    color: #ff4444;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+}
+
+.permission-step p {
+    color: #ccc;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+}
+
+.permission-error {
+    background: rgba(255, 0, 0, 0.2);
+    border: 1px solid #ff0000;
+    color: #ff4444;
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+}
+
+.permission-button {
+    background: linear-gradient(135deg, #ff0000, #8B0000);
+    color: #fff;
+    border: none;
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(255, 0, 0, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.permission-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 0, 0, 0.5);
+}
+
+.permission-button:active {
+    transform: translateY(0);
+}
+
+.permission-info {
+    margin-top: 1rem;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    font-size: 0.9rem;
+    color: #888;
+}
