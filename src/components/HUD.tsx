@@ -1,4 +1,5 @@
 import React from 'react';
+import { useAR } from '../contexts/ARContext';
 import { useGameStore } from '../store/gameStore';
 import '../styles/HUD.css';
 
@@ -15,8 +16,26 @@ export const HUD: React.FC = () => {
     const healthPercentage = (health / maxHealth) * 100;
     const aliveZombies = zombies.filter(z => z.state !== 'dead');
 
+    const { orientation } = useAR();
+    const compassRotation = orientation.alpha || 0;
+
     return (
         <div className="hud">
+            {/* Crosshair */}
+            <div className="crosshair">
+                <div className="crosshair-line horizontal" />
+                <div className="crosshair-line vertical" />
+                <div className="crosshair-dot" />
+            </div>
+
+            {/* Compass - Top Center (Below Wave) */}
+            <div className="compass-container">
+                <div className="compass-arrow" style={{ transform: `rotate(${compassRotation}deg)` }}>
+                    ➤
+                </div>
+                <div className="compass-label">{Math.round(compassRotation)}°</div>
+            </div>
+
             {/* Top Left - Health */}
             <div className="hud-top-left">
                 <div className="health-container">
