@@ -43,21 +43,95 @@ export const ARScene: React.FC = () => {
 
     // Update camera rotation based on device orientation
     useEffect(() => {
-        if (!cameraRef.current || !orientation.beta || !orientation.gamma) return;
+        if (!cameraRef.current || !orientation.alpha || !orientation.beta || !orientation.gamma) return;
 
-        // Convert device orientation to camera rotation
-        // Beta: front-to-back tilt (-180 to 180)
-        // Gamma: left-to-right tilt (-90 to 90)
-        // Alpha: compass direction (0 to 360)
+        // Convert degrees to radians
+        const alpha = orientation.alpha ? THREE.MathUtils.degToRad(orientation.alpha) : 0; // Z
+        const beta = orientation.beta ? THREE.MathUtils.degToRad(orientation.beta) : 0;   // X'
+        const gamma = orientation.gamma ? THREE.MathUtils.degToRad(orientation.gamma) : 0; // Y''
 
-        const beta = THREE.MathUtils.degToRad(orientation.beta || 0);
-        const gamma = THREE.MathUtils.degToRad(orientation.gamma || 0);
-        const alpha = THREE.MathUtils.degToRad(orientation.alpha || 0);
+        // Orientation from device sensors
+        // Device Coordinate System:
+        // alpha: rotation around Z axis
+        // beta: rotation around X axis
+        // gamma: rotation around Y axis
+        // Three.js Coordinate System:
+        // Y is up, Z is forward (or backward depending on camera)
 
-        // Apply rotation to camera
-        cameraRef.current.rotation.x = beta - Math.PI / 2;
-        cameraRef.current.rotation.y = gamma;
-        cameraRef.current.rotation.z = alpha;
+        // Create Euler from device orientation
+        // Order 'ZXY' is typically used for device orientation
+        const euler = new THREE.Euler(beta, alpha, -gamma, 'YXZ');
+
+        const q0 = new THREE.Quaternion();
+        q0.setFromEuler(euler);
+
+        // Adjust for Landscape Mode (-90 degrees around Z axis)
+        const q1 = new THREE.Quaternion();
+        q1.setFromAxisAngle(new THREE.Vector3(0, 0, 1), -Math.PI / 2);
+
+        // Apply rotation to align device frame with world frame (if needed)
+        // Usually we need to rotate -90 around X to make phone flat match world flat
+        // But for "Holding up like a camera", the frame is different.
+
+        // Standard Mapping for "Holding phone up in Landscape":
+        // This is complex. Let's align specifically for the user's "Turn left/right to shoot" request.
+        // We want: 
+        // - Heading (Compass) -> World Y Rotation
+        // - Tilt Up/Down -> World X Rotation
+        // - Tilt Side/Side -> World Z Rotation
+
+        // Let's use a simplified logical mapping for AR Shooter specifically
+        // This forces the "feeling" of alignment rather than strict physics which can feel wonky if sensors drift
+
+        // Landscape Mode Mapping:
+        // Yaw (Turning) = Alpha (Compass)
+        // Pitch (Looking Up/Down) = Gamma (Device Roll in portrait, Pitch in landscape)
+        // Roll (Tilting Head) = Beta (Device Pitch in portrait, Roll in landscape)
+
+        // Correction offsets
+        const yawOffset = THREE.MathUtils.degToRad(0); // Calibrate north if needed
+
+        // Apply to camera
+        // Invert some axes to match Three.js camera looking down -Z
+
+        // Yaw: Alpha is 0=North, 90=East. Three.js is CCW.
+        // We want turning LEFT (decreasing Alpha) to look LEFT (Positive rotation around Y?)
+        // Standard compass: N=0, E=90, S=180, W=270.
+        // To look "right", we rotate camera Right (Negative Y).
+
+        // Let's try direct Euler application with specific order for AR Shooter feel
+        // Y = Alpha (Yaw)
+        // X = Gamma (Pitch)
+        // Z = Beta (Roll)
+
+        // Important: Device alpha increases CCW from North? Check spec. 
+        // Android: 0=North, increases as you turn LEFT? No, increases as you turn RIGHT usually (CW?).
+        // Actually DeviceOrientation Spec says East is X, North is Y.
+
+        // Robust approach:
+        // 1. Create quaternion from Alpha/Beta/Gamma
+        const zee = new THREE.Vector3(0, 0, 1);
+        const euler2 = new THREE.Euler();
+        const q2 = new THREE.Quaternion();
+        const q3 = new THREE.Quaternion();
+
+        // Specific 'ZXY' order for device orientation
+        // beta (x), alpha (z), -gamma (y) 
+        // This is standard WebXR/Three.js device orientation mapping
+        euler2.set(beta, alpha, -gamma, 'YXZ');
+        q2.setFromEuler(euler2);
+
+        // Rotate for screen orientation (-90 for landscape left)
+        q3.setFromAxisAngle(zee, -Math.PI / 2);
+        q2.multiply(q3);
+
+        // Rotate -90 around X to bring "flat on table" to "looking forward"
+        const q4 = new THREE.Quaternion();
+        q4.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
+        q2.multiply(q4);
+
+        cameraRef.current.quaternion.copy(q2);
+
     }, [orientation]);
 
     return (
