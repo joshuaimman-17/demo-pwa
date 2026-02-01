@@ -1,4 +1,4 @@
-import React, { createContext, useContext, ReactNode } from 'react';
+import React, { createContext, useContext, ReactNode, useMemo, useCallback } from 'react';
 import { useCameraFeed } from '../hooks/useCameraFeed';
 import { useDeviceOrientation } from '../hooks/useDeviceOrientation';
 import { debugLog } from '../components/DebugOverlay';
@@ -22,22 +22,39 @@ export const ARProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const cameraData = useCameraFeed();
     const orientationData = useDeviceOrientation();
 
-    debugLog.info(`ARProvider: stream=${cameraData.stream?.id || 'none'}, error=${cameraData.error || 'none'}`);
+    // Only log when stream changes, not on every render
+    const streamId = cameraData.stream?.id;
+    React.useEffect(() => {
+        debugLog.info(`ARProvider: stream=${streamId || 'none'}, error=${cameraData.error || 'none'}`);
+    }, [streamId, cameraData.error]);
 
-    const value: ARContextType = {
+    // Memoize callbacks to prevent re-renders
+    const handleRequestCamera = useCallback(async () => {
+        debugLog.info('ARProvider: requestCamera called');
+        await cameraData.requestCamera();
+    }, [cameraData.requestCamera]);
+
+    const handleRequestPermission = useCallback(async () => {
+        debugLog.info('ARProvider: requestPermission called');
+        await orientationData.requestPermission();
+    }, [orientationData.requestPermission]);
+
+    // Memoize the context value to prevent unnecessary re-renders
+    const value = useMemo<ARContextType>(() => ({
         stream: cameraData.stream,
         cameraError: cameraData.error,
-        requestCamera: async () => {
-            debugLog.info('ARProvider: requestCamera called');
-            await cameraData.requestCamera();
-        },
+        requestCamera: handleRequestCamera,
         orientation: orientationData.orientation,
         orientationError: orientationData.error,
-        requestPermission: async () => {
-            debugLog.info('ARProvider: requestPermission called');
-            await orientationData.requestPermission();
-        },
-    };
+        requestPermission: handleRequestPermission,
+    }), [
+        cameraData.stream,
+        cameraData.error,
+        handleRequestCamera,
+        orientationData.orientation,
+        orientationData.error,
+        handleRequestPermission
+    ]);
 
     return <ARContext.Provider value={value}>{children}</ARContext.Provider>;
 };

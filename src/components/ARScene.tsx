@@ -16,7 +16,11 @@ export const ARScene: React.FC = () => {
     const zombies = useGameStore(state => state.zombies);
     const removeZombie = useGameStore(state => state.removeZombie);
 
-    debugLog.info(`ARScene: stream=${stream?.id || 'NONE'}, active=${stream?.active}, zombies=${zombies.length}`);
+    // Only log when stream changes
+    const streamId = stream?.id;
+    useEffect(() => {
+        debugLog.info(`ARScene: stream=${streamId || 'NONE'}, active=${stream?.active}`);
+    }, [streamId, stream?.active]);
 
     // Update camera feed as background
     useEffect(() => {
