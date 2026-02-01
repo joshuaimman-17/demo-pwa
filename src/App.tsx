@@ -2,6 +2,7 @@ import { isMobileDevice } from './utils/deviceDetection';
 import { DesktopRedirect } from './components/DesktopRedirect';
 import { PermissionGate } from './components/PermissionGate';
 import { Game } from './components/Game';
+import { ARProvider } from './contexts/ARContext';
 import './styles.css';
 
 function App() {
@@ -14,9 +15,11 @@ function App() {
 
     // Mobile users go through permission flow then play game
     return (
-        <PermissionGate>
-            <Game />
-        </PermissionGate>
+        <ARProvider>
+            <PermissionGate>
+                <Game />
+            </PermissionGate>
+        </ARProvider>
     );
 }
 

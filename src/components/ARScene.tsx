@@ -2,8 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera } from '@react-three/drei';
 import * as THREE from 'three';
-import { useCameraFeed } from '../hooks/useCameraFeed';
-import { useDeviceOrientation } from '../hooks/useDeviceOrientation';
+import { useAR } from '../contexts/ARContext';
 import { Gun } from './Gun';
 import { Zombie } from './Zombie';
 import { useGameStore } from '../store/gameStore';
@@ -12,19 +11,9 @@ import '../styles/ARScene.css';
 export const ARScene: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const cameraRef = useRef<THREE.PerspectiveCamera>(null);
-    const { stream, requestCamera } = useCameraFeed();
-    const { orientation, requestPermission } = useDeviceOrientation();
+    const { stream, orientation } = useAR();
     const zombies = useGameStore(state => state.zombies);
     const removeZombie = useGameStore(state => state.removeZombie);
-
-    // Request camera and orientation on mount
-    useEffect(() => {
-        const initializeAR = async () => {
-            await requestCamera();
-            await requestPermission();
-        };
-        initializeAR();
-    }, [requestCamera, requestPermission]);
 
     // Update camera feed as background
     useEffect(() => {

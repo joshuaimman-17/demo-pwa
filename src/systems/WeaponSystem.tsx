@@ -32,7 +32,8 @@ export const WeaponSystem: React.FC = () => {
         raycaster.setFromCamera(new THREE.Vector2(0, 0), camera);
 
         // Check for zombie hits
-        let closestHit: { zombie: Zombie; distance: number; isHeadshot: boolean } | null = null;
+        type HitInfo = { zombie: Zombie; distance: number; isHeadshot: boolean };
+        let closestHit: HitInfo | null = null;
 
         zombies.forEach(zombie => {
             if (zombie.state === 'dead') return;
@@ -61,17 +62,19 @@ export const WeaponSystem: React.FC = () => {
         });
 
         // Apply damage to closest hit
-        if (closestHit) {
-            const damage = closestHit.isHeadshot ? 100 : 50; // Headshot = instant kill
-            const points = closestHit.isHeadshot ? 100 : 50;
+        if (closestHit !== null) {
+            const hitInfo: HitInfo = closestHit;
+            const damage = hitInfo.isHeadshot ? 100 : 50; // Headshot = instant kill
+            const points = hitInfo.isHeadshot ? 100 : 50;
 
-            damageZombie(closestHit.zombie.id, damage);
+            damageZombie(hitInfo.zombie.id, damage);
             addScore(points);
 
             // Remove if dead
-            if (closestHit.zombie.health - damage <= 0) {
+            if (hitInfo.zombie.health - damage <= 0) {
+                const zombieId = hitInfo.zombie.id;
                 setTimeout(() => {
-                    removeZombie(closestHit!.zombie.id);
+                    removeZombie(zombieId);
                 }, 1000);
             }
         }

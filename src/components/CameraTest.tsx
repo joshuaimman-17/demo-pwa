@@ -1,6 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { useCameraFeed } from '../hooks/useCameraFeed';
-import { useDeviceOrientation } from '../hooks/useDeviceOrientation';
+import { useAR } from '../contexts/ARContext';
 import '../styles/CameraTest.css';
 
 interface CameraTestProps {
@@ -9,8 +8,7 @@ interface CameraTestProps {
 
 export const CameraTest: React.FC<CameraTestProps> = ({ onTestComplete }) => {
     const videoRef = useRef<HTMLVideoElement>(null);
-    const { stream, error: cameraError, requestCamera } = useCameraFeed();
-    const { orientation, error: orientationError, requestPermission } = useDeviceOrientation();
+    const { stream, cameraError, requestCamera, orientation, orientationError, requestPermission } = useAR();
     const [cameraReady, setCameraReady] = useState(false);
     const [gyroReady, setGyroReady] = useState(false);
     const [testing, setTesting] = useState(false);
