@@ -21,13 +21,27 @@ export const ARProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const cameraData = useCameraFeed();
     const orientationData = useDeviceOrientation();
 
+    console.log('[ARProvider] Rendering with:', {
+        hasStream: !!cameraData.stream,
+        streamId: cameraData.stream?.id,
+        cameraError: cameraData.error,
+        orientation: orientationData.orientation,
+        orientationError: orientationData.error
+    });
+
     const value: ARContextType = {
         stream: cameraData.stream,
         cameraError: cameraData.error,
-        requestCamera: async () => { await cameraData.requestCamera(); },
+        requestCamera: async () => {
+            console.log('[ARProvider] requestCamera called');
+            await cameraData.requestCamera();
+        },
         orientation: orientationData.orientation,
         orientationError: orientationData.error,
-        requestPermission: async () => { await orientationData.requestPermission(); },
+        requestPermission: async () => {
+            console.log('[ARProvider] requestPermission called');
+            await orientationData.requestPermission();
+        },
     };
 
     return <ARContext.Provider value={value}>{children}</ARContext.Provider>;

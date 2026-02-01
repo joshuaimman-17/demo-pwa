@@ -15,12 +15,36 @@ export const ARScene: React.FC = () => {
     const zombies = useGameStore(state => state.zombies);
     const removeZombie = useGameStore(state => state.removeZombie);
 
+    console.log('[ARScene] Rendering with:', {
+        hasStream: !!stream,
+        streamId: stream?.id,
+        streamActive: stream?.active,
+        hasVideoRef: !!videoRef.current,
+        orientation: orientation,
+        zombieCount: zombies.length
+    });
+
     // Update camera feed as background
     useEffect(() => {
+        console.log('[ARScene] Stream effect triggered:', {
+            hasVideoRef: !!videoRef.current,
+            hasStream: !!stream,
+            streamId: stream?.id,
+            streamActive: stream?.active
+        });
+
         if (videoRef.current && stream) {
+            console.log('[ARScene] Setting video srcObject');
             videoRef.current.srcObject = stream;
-            videoRef.current.play().catch(err => {
-                console.error('Error playing video:', err);
+            videoRef.current.play().then(() => {
+                console.log('[ARScene] ✅ Video playing successfully');
+            }).catch(err => {
+                console.error('[ARScene] ❌ Error playing video:', err);
+            });
+        } else {
+            console.warn('[ARScene] ⚠️ Missing videoRef or stream:', {
+                hasVideoRef: !!videoRef.current,
+                hasStream: !!stream
             });
         }
     }, [stream]);

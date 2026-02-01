@@ -17,6 +17,13 @@ export const Game: React.FC = () => {
     const score = useGameStore(state => state.score);
     const reset = useGameStore(state => state.reset);
 
+    console.log('[Game] State:', {
+        testPassed,
+        isPlaying,
+        isGameOver,
+        score
+    });
+
     useEffect(() => {
         // Lock to landscape orientation
         if (screen.orientation && (screen.orientation as any).lock) {

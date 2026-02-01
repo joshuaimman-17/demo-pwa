@@ -53,6 +53,15 @@ export const CameraTest: React.FC<CameraTestProps> = ({ onTestComplete }) => {
 
     const allTestsPassed = cameraReady && gyroReady;
 
+    console.log('[CameraTest] Status:', {
+        cameraReady,
+        gyroReady,
+        allTestsPassed,
+        hasStream: !!stream,
+        streamId: stream?.id,
+        orientation
+    });
+
     return (
         <div className="camera-test">
             <div className="test-container">
