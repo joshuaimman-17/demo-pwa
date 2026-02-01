@@ -1,14 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ARScene } from './ARScene';
 import { HUD } from './HUD';
 import { FireButton } from './FireButton';
 import { ZombieManager } from '../systems/ZombieManager';
 import { WeaponSystem } from '../systems/WeaponSystem';
 import { DamageFlash } from './DamageFlash';
+import { CameraTest } from './CameraTest';
 import { useGameStore } from '../store/gameStore';
 import '../styles/Game.css';
 
 export const Game: React.FC = () => {
+    const [testPassed, setTestPassed] = useState(false);
     const startGame = useGameStore(state => state.startGame);
     const isPlaying = useGameStore(state => state.isPlaying);
     const isGameOver = useGameStore(state => state.isGameOver);
@@ -30,6 +32,11 @@ export const Game: React.FC = () => {
             });
         }
     }, []);
+
+    // Show camera test first
+    if (!testPassed) {
+        return <CameraTest onTestComplete={() => setTestPassed(true)} />;
+    }
 
     if (!isPlaying && !isGameOver) {
         return (
