@@ -14,7 +14,7 @@ import '../styles/ARScene.css';
 export const ARScene: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const cameraRef = useRef<THREE.PerspectiveCamera>(null);
-    const { stream, orientation } = useAR();
+    const { stream, orientation, yawOffset } = useAR();
     const zombies = useGameStore(state => state.zombies);
     const removeZombie = useGameStore(state => state.removeZombie);
 
@@ -130,6 +130,13 @@ export const ARScene: React.FC = () => {
         q4.setFromAxisAngle(new THREE.Vector3(1, 0, 0), -Math.PI / 2);
         q2.multiply(q4);
 
+        // Apply Calibration Offset (Yaw adjustment)
+        if (yawOffset !== 0) {
+            const qOffset = new THREE.Quaternion();
+            qOffset.setFromAxisAngle(new THREE.Vector3(0, 1, 0), yawOffset);
+            q2.premultiply(qOffset);
+        }
+
         cameraRef.current.quaternion.copy(q2);
 
     }, [orientation]);
@@ -196,11 +203,19 @@ export const ARScene: React.FC = () => {
                 <ZombieManager />
                 <WeaponSystem />
 
-                {/* Ground plane (invisible, for reference) */}
-                <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
-                    <planeGeometry args={[100, 100]} />
-                    <meshStandardMaterial transparent opacity={0} />
-                </mesh>
+                {/* Ground plane & Grid */}
+                <group position={[0, 0, 0]}>
+                    <gridHelper args={[100, 100, 0x444444, 0x222222]} />
+                    <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
+                        <planeGeometry args={[100, 100]} />
+                        <meshStandardMaterial
+                            color="#111111"
+                            transparent
+                            opacity={0.4}
+                            roughness={0.8}
+                        />
+                    </mesh>
+                </group>
             </Canvas>
 
             {/* Loading indicator */}

@@ -7,10 +7,13 @@ import { DamageFlash } from './DamageFlash';
 import { CameraTest } from './CameraTest';
 import { DebugOverlay } from './DebugOverlay';
 import { useGameStore } from '../store/gameStore';
+import { CalibrationOverlay } from './CalibrationOverlay';
+import { useCalibrationStore } from '../store/calibrationStore';
 import '../styles/Game.css';
 
 export const Game: React.FC = () => {
     const [testPassed, setTestPassed] = useState(false);
+    const { isCalibrated } = useCalibrationStore();
     const startGame = useGameStore(state => state.startGame);
     const isPlaying = useGameStore(state => state.isPlaying);
     const isGameOver = useGameStore(state => state.isGameOver);
@@ -55,8 +58,11 @@ export const Game: React.FC = () => {
             {/* Camera and AR Scene - Always visible once tests pass */}
             <ARScene />
 
-            {/* Game Menu Overlay */}
-            {!isPlaying && !isGameOver && (
+            {/* Calibration Overlay */}
+            {!isCalibrated && <CalibrationOverlay />}
+
+            {/* Game Menu Overlay - Only show after calibration */}
+            {!isPlaying && !isGameOver && isCalibrated && (
                 <div className="game-menu">
                     <div className="menu-content">
                         <h1 className="game-logo">

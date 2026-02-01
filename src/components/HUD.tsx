@@ -1,4 +1,5 @@
 import React from 'react';
+import * as THREE from 'three';
 import { useAR } from '../contexts/ARContext';
 import { useGameStore } from '../store/gameStore';
 import '../styles/HUD.css';
@@ -16,8 +17,23 @@ export const HUD: React.FC = () => {
     const healthPercentage = (health / maxHealth) * 100;
     const aliveZombies = zombies.filter(z => z.state !== 'dead');
 
-    const { orientation } = useAR();
+    const { orientation, setYawOffset } = useAR();
     const compassRotation = orientation.alpha || 0;
+
+    const handleCalibrate = () => {
+        if (orientation.alpha !== null) {
+            // We want the current alpha to be "Forward" (Z axis negative?)
+            // If we are facing Alpha=90 (East), and we want it to be Forward (0).
+            // We need an offset of -90.
+            // yawOffset = Target - Current.
+            // But we add it: Final = Current + Offset => Target = Current + Offset => Offset = Target - Current.
+            // Target is 0 (North/Forward).
+            // So Offset = -Current.
+            // However, verify rotational direction. Alpha is 0-360.
+            const currentRad = THREE.MathUtils.degToRad(orientation.alpha);
+            setYawOffset(-currentRad);
+        }
+    };
 
     return (
         <div className="hud">
@@ -99,6 +115,13 @@ export const HUD: React.FC = () => {
             {/* Top Center - Wave */}
             <div className="hud-top-center">
                 <div className="wave-indicator">WAVE {wave}</div>
+            </div>
+
+            {/* Bottom Right - Calibration */}
+            <div className="hud-bottom-right">
+                <button className="calibrate-btn" onClick={handleCalibrate}>
+                    RESET VIEW
+                </button>
             </div>
         </div>
     );

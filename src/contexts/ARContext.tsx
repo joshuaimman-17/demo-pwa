@@ -14,6 +14,8 @@ interface ARContextType {
     };
     orientationError: string | null;
     requestPermission: () => Promise<void>;
+    yawOffset: number;
+    setYawOffset: (offset: number) => void;
 }
 
 const ARContext = createContext<ARContextType | undefined>(undefined);
@@ -21,6 +23,7 @@ const ARContext = createContext<ARContextType | undefined>(undefined);
 export const ARProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const cameraData = useCameraFeed();
     const orientationData = useDeviceOrientation();
+    const [yawOffset, setYawOffset] = React.useState(0);
 
     // Only log when stream changes, not on every render
     const streamId = cameraData.stream?.id;
@@ -47,13 +50,16 @@ export const ARProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
         orientation: orientationData.orientation,
         orientationError: orientationData.error,
         requestPermission: handleRequestPermission,
+        yawOffset,
+        setYawOffset
     }), [
         cameraData.stream,
         cameraData.error,
         handleRequestCamera,
         orientationData.orientation,
         orientationData.error,
-        handleRequestPermission
+        handleRequestPermission,
+        yawOffset
     ]);
 
     return <ARContext.Provider value={value}>{children}</ARContext.Provider>;
