@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ARScene } from './ARScene';
 import { HUD } from './HUD';
 import { FireButton } from './FireButton';
-import { ZombieManager } from '../systems/ZombieManager';
-import { WeaponSystem } from '../systems/WeaponSystem';
+
 import { DamageFlash } from './DamageFlash';
 import { CameraTest } from './CameraTest';
 import { DebugOverlay } from './DebugOverlay';
@@ -51,62 +50,60 @@ export const Game: React.FC = () => {
         );
     }
 
-    if (!isPlaying && !isGameOver) {
-        return (
-            <div className="game-menu">
-                <div className="menu-content">
-                    <h1 className="game-logo">
-                        <span className="logo-ar">AR</span>
-                        <span className="logo-zombie">ZOMBIE</span>
-                        <span className="logo-shooter">SHOOTER</span>
-                    </h1>
-                    <p className="game-tagline">Survive the undead invasion</p>
-                    <button className="start-button" onClick={startGame}>
-                        START GAME
-                    </button>
-                    <div className="game-instructions">
-                        <h3>How to Play:</h3>
-                        <ul>
-                            <li>🎯 Move your phone to aim</li>
-                            <li>🔫 Tap the fire button to shoot</li>
-                            <li>💀 Aim for headshots for instant kills</li>
-                            <li>❤️ Don't let zombies get too close!</li>
-                        </ul>
-                    </div>
-                </div>
-                <DebugOverlay />
-            </div>
-        );
-    }
-
-    if (isGameOver) {
-        return (
-            <div className="game-over">
-                <div className="game-over-content">
-                    <h1 className="game-over-title">GAME OVER</h1>
-                    <p className="final-score">Final Score: {score}</p>
-                    <button className="restart-button" onClick={reset}>
-                        PLAY AGAIN
-                    </button>
-                </div>
-                <DebugOverlay />
-            </div>
-        );
-    }
-
     return (
         <div className="game-container">
+            {/* Camera and AR Scene - Always visible once tests pass */}
             <ARScene />
-            <HUD />
-            <FireButton />
-            <DamageFlash />
-            <DebugOverlay />
 
-            {/* Game systems (invisible) */}
-            <div style={{ display: 'none' }}>
-                <ZombieManager />
-                <WeaponSystem />
-            </div>
+            {/* Game Menu Overlay */}
+            {!isPlaying && !isGameOver && (
+                <div className="game-menu">
+                    <div className="menu-content">
+                        <h1 className="game-logo">
+                            <span className="logo-ar">AR</span>
+                            <span className="logo-zombie">ZOMBIE</span>
+                            <span className="logo-shooter">SHOOTER</span>
+                        </h1>
+                        <p className="game-tagline">Survive the undead invasion</p>
+                        <button className="start-button" onClick={startGame}>
+                            START GAME
+                        </button>
+                        <div className="game-instructions">
+                            <h3>How to Play:</h3>
+                            <ul>
+                                <li>🎯 Move your phone to aim</li>
+                                <li>🔫 Tap the fire button to shoot</li>
+                                <li>💀 Aim for headshots for instant kills</li>
+                                <li>❤️ Don't let zombies get too close!</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Game Over Overlay */}
+            {isGameOver && (
+                <div className="game-over">
+                    <div className="game-over-content">
+                        <h1 className="game-over-title">GAME OVER</h1>
+                        <p className="final-score">Final Score: {score}</p>
+                        <button className="restart-button" onClick={reset}>
+                            PLAY AGAIN
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Game UI - Only when playing */}
+            {isPlaying && !isGameOver && (
+                <>
+                    <HUD />
+                    <FireButton />
+                    <DamageFlash />
+                </>
+            )}
+
+            <DebugOverlay />
         </div>
     );
 };

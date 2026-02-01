@@ -6,6 +6,8 @@ import { useAR } from '../contexts/ARContext';
 import { Gun } from './Gun';
 import { Zombie } from './Zombie';
 import { useGameStore } from '../store/gameStore';
+import { ZombieManager } from '../systems/ZombieManager';
+import { WeaponSystem } from '../systems/WeaponSystem';
 import { debugLog } from './DebugOverlay';
 import '../styles/ARScene.css';
 
@@ -115,6 +117,10 @@ export const ARScene: React.FC = () => {
                         onDeath={removeZombie}
                     />
                 ))}
+
+                {/* Game Systems */}
+                <ZombieManager />
+                <WeaponSystem />
 
                 {/* Ground plane (invisible, for reference) */}
                 <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]} receiveShadow>
