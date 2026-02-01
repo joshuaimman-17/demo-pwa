@@ -76,6 +76,11 @@ export const HUD: React.FC = () => {
                 </div>
             </div>
 
+            {/* Center - Crosshair/Aim Point */}
+            <div className="hud-center">
+                <div className="crosshair"></div>
+            </div>
+
             {/* Top Center - Wave */}
             <div className="hud-top-center">
                 <div className="wave-indicator">WAVE {wave}</div>

@@ -233,4 +233,44 @@
     font-size: 18px;
     font-weight: bold;
     letter-spacing: 3px;
-}
+
+    /* Center - Crosshair */
+    .hud-center {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+    }
+
+    .crosshair {
+        width: 40px;
+        height: 40px;
+        position: relative;
+    }
+
+    .crosshair::before,
+    .crosshair::after {
+        content: '';
+        position: absolute;
+        background: #00ff00;
+        box-shadow: 0 0 5px #00ff00;
+    }
+
+    /* Horizontal line */
+    .crosshair::before {
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        transform: translateY(-50%);
+    }
+
+    /* Vertical line */
+    .crosshair::after {
+        left: 50%;
+        top: 0;
+        height: 100%;
+        width: 2px;
+        transform: translateX(-50%);
+    }
